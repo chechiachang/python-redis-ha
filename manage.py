@@ -23,6 +23,11 @@ pipeline = redis.pipeline()
 while True:
     pipeline.set('test', time.time() % 60 , ex=5)
     pipeline.get('test')
-    result = pipeline.execute()
-    print("Testing redis", result)
-    time.sleep(1)
+    try:
+        result = pipeline.execute()
+        print("Testing redis", result)
+    except:
+        print("error")
+        time.sleep(1)
+    else:
+        time.sleep(1)
