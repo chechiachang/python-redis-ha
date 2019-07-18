@@ -9,6 +9,7 @@ Flask-Redis = "==0.3.0"
 redis = "==3.2.0"
 
 [dev-packages]
+pipenv-to-requirements = "==0.7.1"
 
 [requires]
 python_version = "3.6"

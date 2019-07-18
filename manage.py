@@ -3,6 +3,7 @@ import time
 import logging
 
 from flask import Flask
+from flask import Config
 from flask_redis import FlaskRedis
 
 REDIS_URL = 'redis://:{password}@{host}:{port}/0'.format(
@@ -12,6 +13,8 @@ REDIS_URL = 'redis://:{password}@{host}:{port}/0'.format(
 )
 
 flask_app = Flask(__name__)
+flask_app.config['REDIS_URL'] = REDIS_URL
+
 redis = FlaskRedis()
 redis.init_app(flask_app)
 flask_app.config["DEBUG"] = True

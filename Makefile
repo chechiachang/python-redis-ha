@@ -19,3 +19,6 @@ dev: install
 
 docker:
 	docker-compose up -d
+
+requirements:
+	pipenv run pipenv_to_requirements
