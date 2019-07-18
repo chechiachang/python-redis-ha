@@ -16,3 +16,6 @@ dev: install
 	pip install pre-commit
 	pre-commit install-hooks
 	pipenv install -d
+
+docker:
+	docker-compose up -d

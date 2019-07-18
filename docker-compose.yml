@@ -1,0 +1,18 @@
+version: '3'
+services:
+  mysql:
+    image: "mysql:5.7"
+    ports:
+    - "3306:3306"
+    environment:
+    - MYSQL_DATABASE=machix
+    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+    - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: always
+  redis:
+    image: "redis:5.0.5"
+    ports:
+    - "6379:6379"
+    restart: always
