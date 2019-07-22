@@ -7,7 +7,7 @@ from flask import Config
 from flask_redis import FlaskRedis
 
 REDIS_SENTINEL_MASTER = 'mymaster'
-REDIS_SENTINEL_URL = ''
+REDIS_SENTINEL_URL = [('localhost', '26379')]
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', '')
 
 flask_app = Flask(__name__)
