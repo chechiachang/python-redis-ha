@@ -37,28 +37,32 @@ class FlaskRedis(object):
             "{0}_URL".format(self.config_prefix), "redis://localhost:6379/0"
         )
 
-        self._redis_client = self.connect(redis_url, **kwargs)
+        self.reconnect(redis_url, **kwargs)
 
         if not hasattr(app, "extensions"):
             app.extensions = {}
         app.extensions[self.config_prefix.lower()] = self
 
-    def connect(self, redis_url=None, **kwargs):
-        if self._app.config.get('{0}_SENTINEL_URL'):
-            if not hasattr(self, '_redis_client'):
+    def reconnect(self, redis_url=None, **kwargs):
+        self.provider_kwargs.update(kwargs)
+
+        if self._app.config.get('{0}_SENTINEL_URL'.format(self.config_prefix)):
+            if not hasattr(self, '_redis_sentinel'):
                 self._redis_sentinel = Sentinel(
-                    self._app.config.get('{0}_SENTINEL_URL'),
-                    socket_timeout=self._app.config.get('{0}_SENTINEL_TIMEOUT', 0.1)
+                    self._app.config.get('{0}_SENTINEL_URL'.format(self.config_prefix)),
+                    socket_timeout=self._app.config.get(
+                        '{0}_SENTINEL_TIMEOUT'.format(self.config_prefix), 0.1
+                    )
                 )
 
-            return self._redis_sentinel.master_for(
-                self._app.config.get('{0}_SENTINEL_MASTER'),
+            self._redis_client = self._redis_sentinel.master_for(
+                self._app.config.get('{0}_SENTINEL_MASTER'.format(self.config_prefix)),
+                **self.provider_kwargs,
             )
-
-        self.provider_kwargs.update(kwargs)
-        return self.provider_class.from_url(
-            redis_url, **self.provider_kwargs
-        )
+        else:
+            self._redis_client = self.provider_class.from_url(
+                redis_url, **self.provider_kwargs
+            )
 
     def __getattr__(self, name):
         return getattr(self._redis_client, name)

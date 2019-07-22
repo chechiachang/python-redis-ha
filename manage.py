@@ -6,16 +6,15 @@ from flask import Flask
 from flask import Config
 from flask_redis import FlaskRedis
 
-REDIS_URL = 'redis://:{password}@{host}:{port}/0'.format(
-     password=os.environ.get('REDIS_PASSWORD', ''),
-     host=os.environ.get('REDIS_HOST', '127.0.0.1'),
-     port='6379',
-)
+REDIS_SENTINEL_MASTER = 'mymaster'
+REDIS_SENTINEL_URL = ''
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', '')
 
 flask_app = Flask(__name__)
-flask_app.config['REDIS_URL'] = REDIS_URL
+flask_app.config['REDIS_SENTINEL_URL'] = REDIS_SENTINEL_URL
+flask_app.config['REDIS_SENTINEL_MASTER'] = REDIS_SENTINEL_MASTER
 
-redis = FlaskRedis()
+redis = FlaskRedis(password=REDIS_PASSWORD)
 redis.init_app(flask_app)
 flask_app.config["DEBUG"] = True
 
